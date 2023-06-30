@@ -10,14 +10,15 @@
   position: relative;
   background-image: url('field.jpg');
 }
-#goal {
+
+    #goal {
       width: 10px;
       height: 80px;
       background-color: red;
       position: absolute;
       top: 110px;
       right: 0;
-}
+    }
 
 #ball {
   width: 40px;
@@ -53,10 +54,8 @@
     });
 
     function moveBall(targetX, targetY) {
-    var ballRect = ball.getBoundingClientRect();
-    var startX = ballRect.left;
-    var startY = ballRect.top;
-
+      var startX = parseInt(ball.style.left) || 0;
+      var startY = parseInt(ball.style.top) || 0;
 
       var dx = targetX - startX;
       var dy = targetY - startY;
