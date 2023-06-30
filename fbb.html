@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>足球射门游戏</title>
+  <style>
+#field {
+  width: 500px;
+  height: 300px;
+  border: 2px solid black;
+  position: relative;
+  background-image: url('field.jpg');
+}
+
+    #goal {
+      width: 10px;
+      height: 80px;
+      background-color: red;
+      position: absolute;
+      top: 110px;
+      right: 0;
+    }
+
+#ball {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: transparent;
+  background-image: url('b.jpg');
+  position: absolute;
+  top: 140px;
+  left: 220px; /* 父容器宽度的一半减去圆形元素宽度的一半 */
+}
+  </style>
+</head>
+<body>
+  <h1>足球射门游戏</h1>
+  <div id="field">
+    <div id="goal"></div>
+    <div id="ball"></div>
+  </div>
+
+  <script>
+    var ball = document.getElementById('ball');
+    var goal = document.getElementById('goal');
+    var field = document.getElementById('field');
+
+    var originalPosition = { x: 0, y: 140 };
+
+    field.addEventListener('click', function(event) {
+      var x = event.clientX - field.offsetLeft;
+      var y = event.clientY - field.offsetTop;
+
+      moveBall(x, y);
+    });
+
+    function moveBall(targetX, targetY) {
+      var startX = parseInt(ball.style.left) || 0;
+      var startY = parseInt(ball.style.top) || 0;
+
+      var dx = targetX - startX;
+      var dy = targetY - startY;
+
+      var duration = 1000; // 运动持续时间（毫秒）
+      var startTime = performance.now();
+
+      requestAnimationFrame(function step(timestamp) {
+        var currentTime = timestamp - startTime;
+
+        if (currentTime >= duration) {
+          ball.style.left = targetX + 'px';
+          ball.style.top = targetY + 'px';
+
+          if (isGoalScored()) {
+            setTimeout(resetBall, 1000); // 等待1秒后复位
+          }
+        } else {
+          var progress = currentTime / duration;
+          var newX = startX + dx * progress;
+          var newY = startY + dy * progress;
+
+          ball.style.left = newX + 'px';
+          ball.style.top = newY + 'px';
+
+          requestAnimationFrame(step);
+        }
+      });
+    }
+
+    function isGoalScored() {
+      var ballRect = ball.getBoundingClientRect();
+      var goalRect = goal.getBoundingClientRect();
+
+      return (
+        ballRect.right >= goalRect.left &&
+        ballRect.bottom >= goalRect.top &&
+        ballRect.top <= goalRect.bottom
+      );
+    }
+
+    function resetBall() {
+      ball.style.left = originalPosition.x + 'px';
+      ball.style.top = originalPosition.y + 'px';
+    }
+  </script>
+</body>
+</html>
